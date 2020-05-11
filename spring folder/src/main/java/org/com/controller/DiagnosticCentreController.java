@@ -1,18 +1,17 @@
 package org.com.controller;
 
-import java.util.HashMap;
-import java.util.Optional;
 
-import org.com.dao.DiagnosticCentreRepositories;
+import java.util.List;
+import java.util.Set;
+
 import org.com.error.RecordNotFoundException;
 import org.com.model.DiagnosticCentre;
-
+import org.com.service.DiagnosticCentreService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,44 +20,52 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/diagnosticCentre")
+@CrossOrigin("http://localhost:4200")
+@RequestMapping("/centre")
+public class DiagnosticCentreController {
 
-public class DiagnosticCentreController{
-	
 	@Autowired
-	DiagnosticCentreRepositories dao;
-
-
+	private DiagnosticCentreService dcservice;
+	
+	// add new centre
 	@PostMapping("/addCentre")
-	@ExceptionHandler(RecordNotFoundException.class)
-	public ResponseEntity<DiagnosticCentre> addCentre(@RequestBody DiagnosticCentre dc) {
-		Optional<DiagnosticCentre> findById=dao.findById(dc.getCentreId());
-		try{
-			if(!findById.isPresent()) {
-				dao.save(dc);
-				return new ResponseEntity<DiagnosticCentre>(dc, HttpStatus.OK);
-				}
-			else
-				throw new RecordNotFoundException("Record already present...");
-			}
-		catch(RecordNotFoundException e){
-			return new ResponseEntity<DiagnosticCentre>(dc, HttpStatus.NOT_FOUND);
-			}
-		}
-	
-	@DeleteMapping("/deleteCentre/{id}")
-	public String removeCentre(@PathVariable("id") int dcid) {
-		Optional<DiagnosticCentre> findById=dao.findById(dcid);
-		if(findById.isPresent()) {
-			dao.deleteById(dcid);
-			return "centre removed";
-			}
-		return "centre not present";
-		}
-	
-	
-	
+	public String addCentre(@RequestBody DiagnosticCentre diagnosticcentre) {
 
-		
+		return dcservice.addCentre(diagnosticcentre);
+
 	}
 
+	// update centre
+	@PutMapping("/updateCentre/{centreId}")
+	public String updateCentre(@PathVariable(value = "centreId") int centreId, @RequestBody DiagnosticCentre diagnosticcentredetails)
+			throws RecordNotFoundException {
+
+		return dcservice.updateCentre(centreId, diagnosticcentredetails);
+	}
+
+	// delete centre
+	@DeleteMapping("/deleteCentre/{centreId}")
+	public String deleteCentre(@PathVariable(value = "centreId") int centreId) throws RecordNotFoundException {
+
+		return dcservice.deleteCentre(centreId);
+	}
+
+	// get Centre By Id
+	@GetMapping("/findCentreById/{centreId}")
+	public ResponseEntity<DiagnosticCentre> getCentreById(@PathVariable(value = "centreId") int centreId)
+			throws RecordNotFoundException {
+
+		return dcservice.getCentreById(centreId);
+	}
+
+	// Get All Centre
+	@GetMapping("/AllCentre")
+	public List<DiagnosticCentre> getAllCentre(int centreId) {
+
+		return dcservice.getAllCentre(centreId);
+
+	}
+
+	
+
+}

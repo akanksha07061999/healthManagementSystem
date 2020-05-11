@@ -17,6 +17,13 @@ public class DiagnosticCentre {
 	//@GeneratedValue(strategy = GenerationType.AUTO)
 	String centreName;
 	int centreId;
+	String centreAddress;
+	public String getCentreAdress() {
+		return centreAddress;
+	}
+	public void setCentreAdress(String centreAdress) {
+		this.centreAddress = centreAdress;
+	}
 	List listOfTests=new ArrayList();
 	List appointmentList =new ArrayList();
 	
@@ -46,7 +53,7 @@ public class DiagnosticCentre {
 	}
 	@Override
 	public String toString() {
-	return "Test Centre [centreId=" + centreId + ", centreName=" + centreName + ",  listOfTests=" + listOfTests + ", appointmentList=" + appointmentList + "]";
+	return "Test Centre [centreId=" + centreId + ", centreName=" + centreName + ", centreAddress="+ centreAddress+",  listOfTests=" + listOfTests + ", appointmentList=" + appointmentList + "]";
 	}
 	
 	
